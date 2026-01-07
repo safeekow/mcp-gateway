@@ -1,0 +1,10 @@
+FROM node:20
+WORKDIR /app
+# Gitリポジトリをクローン
+RUN git clone <追加したいGitHubのURL> .
+RUN npm install
+RUN npm run build
+# Supergatewayを入れて公開 (ポートは適宜変更)
+RUN npm install -g supergateway
+EXPOSE 8002
+CMD ["npx", "supergateway", "--port", "8002", "--stdio", "npm start"]

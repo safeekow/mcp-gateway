@@ -1,0 +1,41 @@
+# Git関連
+.git
+.gitignore
+
+# Docker関連
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# ドキュメント
+*.md
+docs/
+
+# 設定ファイル
+.env
+.env.*
+
+# データディレクトリ
+data/
+logs/
+
+# 開発ツール
+.vscode/
+.idea/
+
+# Python関連
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+.pytest_cache/
+
+# macOS関連
+.DS_Store
+
+# 一時ファイル
+*.tmp
+*.log

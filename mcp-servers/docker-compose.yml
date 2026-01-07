@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  mcp-mermaid:
+    build: ./mcp-mermaid
+    restart: unless-stopped
+    container_name: mcp-mermaid
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "3033"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - mcp-servers
+    # The gateway will connect to this service through the shared Docker network,
+    # so publishing the port to the host is generally not needed.
+    # You can uncomment the line below if you need direct access from the host.
+    # ports:
+    #   - "3033:3033"
+  mcp-sequentialthinking:
+    build: ./sequentialthinking
+    restart: unless-stopped
+    container_name: mcp-sequentialthinking
+    healthcheck:
+      # wgetでSSEエンドポイントへ接続確認 (--spiderでダウンロードせずヘッダのみ確認)
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8000/sse || exit 1"]
+      interval: 30s      # チェックの間隔
+      timeout: 10s       # タイムアウト時間
+      retries: 3         # 失敗とみなすまでの回数
+      start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
+
+networks:
+  mcp-servers:
+    external: true

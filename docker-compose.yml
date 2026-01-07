@@ -1,0 +1,116 @@
+services:
+  # IBM ContextForge MCP Gateway (PostgreSQL版)
+  mcp-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: mcp-contextforge-gateway
+    ports:
+      - "${MCP_GATEWAY_PORT:-4444}:4444"
+    networks:
+      - mcp-servers
+    env_file:
+      - .env
+    environment:
+      # ContextForge Gateway 基本設定
+      HOST: ${MCP_GATEWAY_HOST:-0.0.0.0}
+      PORT: ${MCP_GATEWAY_PORT:-4444}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+
+      # 認証・セキュリティ設定
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-change-this-secret-key-in-production}
+      BASIC_AUTH_USER: ${BASIC_AUTH_USER:-admin}
+      BASIC_AUTH_PASSWORD: ${BASIC_AUTH_PASSWORD:-changeme}
+      # HTTP開発環境用にSecure Cookieを無効化
+      SECURE_COOKIES: "false"
+
+      # 管理UI・API設定
+      MCPGATEWAY_UI_ENABLED: ${MCPGATEWAY_UI_ENABLED:-true}
+      MCPGATEWAY_ADMIN_API_ENABLED: ${MCPGATEWAY_ADMIN_API_ENABLED:-true}
+
+      # プラットフォーム管理者設定
+      PLATFORM_ADMIN_EMAIL: ${PLATFORM_ADMIN_EMAIL:-admin@example.com}
+      PLATFORM_ADMIN_PASSWORD: ${PLATFORM_ADMIN_PASSWORD:-changeme}
+      PLATFORM_ADMIN_FULL_NAME: ${PLATFORM_ADMIN_FULL_NAME:-Platform Administrator}
+
+      # データベース設定（PostgreSQL）
+      DATABASE_URL: ${DATABASE_URL}
+
+      # キャッシュ・フェデレーション設定
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+      CACHE_TYPE: ${CACHE_TYPE:-redis}
+      FEDERATION_ENABLED: ${FEDERATION_ENABLED:-false}
+
+      # 観測性設定
+      OTEL_ENABLE_OBSERVABILITY: ${OTEL_ENABLE_OBSERVABILITY:-false}
+      OTEL_TRACES_EXPORTER: ${OTEL_TRACES_EXPORTER:-otlp}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://localhost:4318}
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-mcp-contextforge-arm64}
+      OTEL_DEPLOYMENT_ENVIRONMENT: ${OTEL_DEPLOYMENT_ENVIRONMENT:-development}
+
+    volumes:
+      # データの永続化 (SQLiteファイルもここに残るため移行時に利用可能)
+      - mcp_data:/app/data
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    restart: unless-stopped
+
+    # ヘルスチェック
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4444/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # PostgreSQL データベース
+  postgres:
+    image: postgres:16-alpine
+    container_name: mcp-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: mcp
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mcp-servers
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis キャッシュ
+  redis:
+    image: redis:7-alpine
+    container_name: mcp-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    networks:
+      - mcp-servers
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mcp_data:
+    driver: local
+  redis_data:
+    driver: local
+  postgres_data:
+    driver: local
+
+networks:
+  mcp-servers:
+    external: true
