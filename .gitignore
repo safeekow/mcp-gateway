@@ -90,3 +90,6 @@ docker-compose.override.yml
 *.log
 logs/
 /.ai/mcp/mcp.json
+
+# SQLite environment file
+.env.sqlite
