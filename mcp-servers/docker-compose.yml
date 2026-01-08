@@ -23,8 +23,131 @@ services:
     restart: unless-stopped
     container_name: mcp-sequentialthinking
     healthcheck:
-      # wgetでSSEエンドポイントへ接続確認 (--spiderでダウンロードせずヘッダのみ確認)
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8000/sse || exit 1"]
+      # ncでポートが開いているか確認
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s      # チェックの間隔
+      timeout: 10s       # タイムアウト時間
+      retries: 3         # 失敗とみなすまでの回数
+      start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
+
+  mcp-aes-diagram:
+    build: ./aws-diagram
+    restart: unless-stopped
+    container_name: mcp-aws-diagram
+    healthcheck:
+      # ncでポートが開いているか確認
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s      # チェックの間隔
+      timeout: 10s       # タイムアウト時間
+      retries: 3         # 失敗とみなすまでの回数
+      start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
+
+  mcp-aws-documentation:
+    build: ./aws-documentation
+    restart: unless-stopped
+    container_name: mcp-aws-documentation
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-servers
+
+  mcp-dart:
+    build: ./dart
+    restart: unless-stopped
+    container_name: mcp-dart
+    healthcheck:
+      # ncでポートが開いているか確認
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s      # チェックの間隔
+      timeout: 10s       # タイムアウト時間
+      retries: 3         # 失敗とみなすまでの回数
+      start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
+
+  mcp-magic:
+    build: ./magic
+    restart: unless-stopped
+    container_name: mcp-magic
+    healthcheck:
+      # ncでポートが開いているか確認
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s      # チェックの間隔
+      timeout: 10s       # タイムアウト時間
+      retries: 3         # 失敗とみなすまでの回数
+      start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
+
+  mcp-memory:
+    build: ./memory
+    restart: unless-stopped
+    container_name: mcp-memory
+    healthcheck:
+      # ncでポートが開いているか確認
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s      # チェックの間隔
+      timeout: 10s       # タイムアウト時間
+      retries: 3         # 失敗とみなすまでの回数
+      start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
+
+  mcp-morphllm:
+    build: ./morphllm
+    restart: unless-stopped
+    container_name: mcp-morphllm
+    healthcheck:
+      # ncでポートが開いているか確認
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s      # チェックの間隔
+      timeout: 10s       # タイムアウト時間
+      retries: 3         # 失敗とみなすまでの回数
+      start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
+
+
+  mcp-growi:
+    build: ./growi
+    restart: unless-stopped
+    container_name: mcp-growi
+    env_file:
+      - .env
+    environment:
+      - GROWI_APP_NAME_1=${GROWI_APP_NAME}
+      - GROWI_BASE_URL_1=${GROWI_BASE_URL}
+      - GROWI_API_TOKEN_1=${GROWI_API_TOKEN}
+    healthcheck:
+      # ncでポートが開いているか確認
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s      # チェックの間隔
+      timeout: 10s       # タイムアウト時間
+      retries: 3         # 失敗とみなすまでの回数
+      start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
+
+  mcp-gitlab:
+    build: ./gitlab
+    restart: unless-stopped
+    container_name: mcp-gitlab
+    env_file:
+      - .env
+    environment:
+      - GITLAB_PERSONAL_ACCESS_TOKEN=${GITLAB_PERSONAL_ACCESS_TOKEN}
+      - GITLAB_API_URL=${GITLAB_API_URL}
+    healthcheck:
+      # ncでポートが開いているか確認
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
       interval: 30s      # チェックの間隔
       timeout: 10s       # タイムアウト時間
       retries: 3         # 失敗とみなすまでの回数
