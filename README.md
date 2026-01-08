@@ -148,6 +148,7 @@ graph LR
 
 - [クイックスタート](#クイックスタート) - ローカル環境でのセットアップ手順
 - [環境変数リファレンス](docs/ENV.md) - 全設定項目の詳細
+- [クライアント接続設定](docs/CLIENT-SETUP.md) - JetBrains AI Assistant 等との連携設定
 
 ### 設定・管理
 
