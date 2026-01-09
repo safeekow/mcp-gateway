@@ -41,11 +41,15 @@ child.stdout.on('data', (data) => {
       // tools/list のレスポンスを検出して修正
       if (msg.result && Array.isArray(msg.result.tools)) {
         msg.result.tools.forEach(tool => {
+          // inputSchemaがない場合は作成
+          if (!tool.inputSchema) {
+             tool.inputSchema = { type: 'object', properties: {} };
+          }
+
           if (tool.inputSchema) {
             // typeプロパティがない、あるいは不正な場合は 'object' に強制
             if (!tool.inputSchema.type || tool.inputSchema.type !== 'object') {
-                // エラーログを出しておくとデバッグに役立つかも
-                // console.error(`[wrapper] Fixing schema for tool: ${tool.name}`);
+                console.error(`[wrapper] Fixing schema for tool: ${tool.name} (was: ${tool.inputSchema.type})`);
                 tool.inputSchema.type = 'object';
             }
           }
