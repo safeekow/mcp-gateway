@@ -122,10 +122,6 @@ services:
     container_name: mcp-growi
     env_file:
       - .env
-    environment:
-      - GROWI_APP_NAME_1=${GROWI_APP_NAME}
-      - GROWI_BASE_URL_1=${GROWI_BASE_URL}
-      - GROWI_API_TOKEN_1=${GROWI_API_TOKEN}
     healthcheck:
       # ncでポートが開いているか確認
       test: ["CMD", "nc", "-z", "localhost", "8000"]
@@ -140,8 +136,6 @@ services:
     build: ./gitlab
     restart: unless-stopped
     container_name: mcp-gitlab
-    env_file:
-      - .env
     environment:
       - GITLAB_PERSONAL_ACCESS_TOKEN=${GITLAB_PERSONAL_ACCESS_TOKEN}
       - GITLAB_API_URL=${GITLAB_API_URL}
