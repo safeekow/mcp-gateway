@@ -1,0 +1,97 @@
+servers:
+  - id: mermaid
+    name: Mermaid
+    category: Utilities
+    url: http://mcp-mermaid:3033/sse
+    auth_type: Open
+    provider: Local
+    description: テキストベースのMermaid記法からダイアグラム画像を生成します。
+    requires_api_key: false
+    tags:
+      - utilities
+
+  - id: sequentialthinking
+    name: "Sequential Thinking"
+    category: Utilities
+    url: http://mcp-sequentialthinking:8000/sse
+    auth_type: Open
+    provider: Local
+    description: AIモデルが複雑な問題を解決するための「思考の連鎖」を構造化して提供します。
+    requires_api_key: false
+    tags:
+      - utilities
+
+  - id: aws-diagram
+    name: "AWS Diagram"
+    category: Utilities
+    url: http://mcp-aws-diagram:8000/sse
+    auth_type: Open
+    provider: Local
+    description: Pythonのdiagramsパッケージを使用して、AWSのインフラ構成図をコードベースで生成します。
+    requires_api_key: false
+    tags:
+      - utilities
+      - diagram
+      - aws
+
+  - id: aws-documentation
+    name: "AWS Documentation"
+    category: Documentation
+    url: http://mcp-aws-documentation:8000/sse
+    auth_type: Open
+    provider: Local
+    description: AWSの公式ドキュメントを検索し、関連する情報を抽出します。
+    requires_api_key: false
+    tags:
+      - documentation
+      - aws
+
+  - id: dart
+    name: Dart
+    category: Software Development
+    url: http://mcp-dart:8000/sse
+    auth_type: Open
+    provider: Local
+    description: Dart 言語および Flutter プロジェクトの開発支援機能を提供します。
+    requires_api_key: false
+    tags:
+      - software
+      - development
+      - dart
+
+  - name: magic
+    url: http://mcp-magic:8000/sse
+    transport: sse
+    description: 自然言語の指示から、即座に利用可能な UI コンポーネントやコードスニペットを生成します。
+
+  - name: morphllm
+    url: http://mcp-morphllm:8000/sse
+    transport: sse
+    description: ソースコードに対する変更を高速かつ正確に適用するための支援ツールです。
+
+  - name: growi
+    url: http://mcp-growi:8000/sse
+    transport: sse
+    description: Wikiツール「GROWI」と連携し、ナレッジの検索や操作を行います。
+
+  - name: memory
+    url: http://mcp-memory:8000/sse
+    transport: sse
+    description: AIとの対話履歴や重要な事実を「知識グラフ」として永続化します。
+
+  - name: gitlab
+    url: http://mcp-gitlab:8000/sse
+    transport: sse
+    description: GitLab リポジトリに対する様々な操作を提供します。
+
+ # Optional: Categories for UI filtering
+ categories:
+   - Utilities
+   - Software Development
+   - Documentation
+
+ # Optional: Auth types for UI filtering
+ auth_types:
+   - Open
+   - OAuth2.1
+   - API Key
