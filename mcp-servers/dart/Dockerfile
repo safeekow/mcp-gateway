@@ -13,9 +13,12 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+WORKDIR /app
+COPY wrapper.js .
+
 # 3. ポート開放
 EXPOSE 8000
 
 # 4. 実行コマンド
 #    supergateway を経由して dart mcp-server を実行します
-CMD ["sh", "-c", "echo 'Starting Dart server...' && supergateway --port 8000 --stdio 'dart mcp-server --force-roots-fallback'"]
+CMD ["sh", "-c", "echo 'Starting Dart server...' && supergateway --port 8000 --stdio 'node wrapper.js dart mcp-server --force-roots-fallback'"]

@@ -1,6 +1,13 @@
 const { spawn } = require('child_process');
 
-// 引数から実行するコマンドと引数を取得
+/**
+ * GitLab MCP Wrapper
+ * 
+ * Functions:
+ * 1. Sanitizes tool descriptions (removes unsafe characters like backticks and '>').
+ * 2. Fixes missing or invalid inputSchema.
+ */
+
 const args = process.argv.slice(2);
 if (args.length === 0) {
   console.error('Usage: node wrapper.js <command> [args...]');
@@ -14,51 +21,49 @@ const child = spawn(command, commandArgs, {
   stdio: ['pipe', 'pipe', process.stderr]
 });
 
+const sanitizeDescription = (desc) => {
+  if (!desc) return '';
+  return desc
+    .replace(/`/g, "'")
+    .replace(/>/g, "")
+    .trim();
+};
+
 process.stdin.pipe(child.stdin);
 
-let buffer = '';
-
+let outputBuffer = '';
 child.stdout.on('data', (data) => {
-  buffer += data.toString();
+  outputBuffer += data.toString();
+  const lines = outputBuffer.split('\n');
   
-  // 改行で分割
-  const lines = buffer.split('\n');
-  
-  // 最後の要素は不完全な行かもしれないのでバッファに戻す
-  // ただし、最後の要素が空文字の場合は完全に分割できている
-  if (buffer.endsWith('\n')) {
-      buffer = '';
+  if (outputBuffer.endsWith('\n')) {
+    outputBuffer = '';
   } else {
-      buffer = lines.pop();
+    outputBuffer = lines.pop();
   }
 
   for (const line of lines) {
     if (line.trim() === '') continue;
-    
     try {
       const msg = JSON.parse(line);
       
-      // tools/list のレスポンスを検出して修正
+      // Intercept tools/list response to sanitize
       if (msg.result && Array.isArray(msg.result.tools)) {
         msg.result.tools.forEach(tool => {
-          // inputSchemaがない場合は作成
-          if (!tool.inputSchema) {
-             tool.inputSchema = { type: 'object', properties: {} };
-          }
+          // 1. Sanitize Description
+          tool.description = sanitizeDescription(tool.description);
 
-          if (tool.inputSchema) {
-            // typeプロパティがない、あるいは不正な場合は 'object' に強制
-            if (!tool.inputSchema.type || tool.inputSchema.type !== 'object') {
-                console.error(`[wrapper] Fixing schema for tool: ${tool.name} (was: ${tool.inputSchema.type})`);
-                tool.inputSchema.type = 'object';
-            }
+          // 2. Fix inputSchema
+          if (!tool.inputSchema || typeof tool.inputSchema !== 'object') {
+            tool.inputSchema = { type: 'object', properties: {} };
+          } else if (!tool.inputSchema.type || tool.inputSchema.type !== 'object') {
+            tool.inputSchema.type = 'object';
           }
         });
       }
       
       process.stdout.write(JSON.stringify(msg) + '\n');
     } catch (e) {
-      // JSONパースできない行はそのまま出力
       process.stdout.write(line + '\n');
     }
   }

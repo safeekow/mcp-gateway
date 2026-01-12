@@ -59,6 +59,8 @@ HEALTHCHECK --interval=30s --timeout=10s --retries=3 --start-period=40s \
 # ポート公開
 EXPOSE 4444
 
+COPY --chown=mcpuser:mcpuser mcp-catalog.yml /app/
+
 # Gunicorn起動スクリプト
 COPY --chown=mcpuser:mcpuser deployment/docker-entrypoint.sh /app/
 RUN chmod +x /app/docker-entrypoint.sh

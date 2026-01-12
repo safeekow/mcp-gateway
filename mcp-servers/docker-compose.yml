@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mcp-mermaid:
     build: ./mcp-mermaid
@@ -146,6 +144,116 @@ services:
       timeout: 10s       # タイムアウト時間
       retries: 3         # 失敗とみなすまでの回数
       start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
+
+  mcp-filesystem:
+    build: ./filesystem
+    restart: unless-stopped
+    container_name: mcp-filesystem
+    volumes:
+      - ../workspace:/projects
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-servers
+
+  mcp-fetch:
+    build: ./fetch
+    restart: unless-stopped
+    container_name: mcp-fetch
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-servers
+
+  mcp-time:
+    build: ./time
+    restart: unless-stopped
+    container_name: mcp-time
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-servers
+
+  mcp-github:
+    build: ./github
+    restart: unless-stopped
+    container_name: mcp-github
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-servers
+
+  mcp-gdrive:
+    build: ./gdrive
+    restart: unless-stopped
+    container_name: mcp-gdrive
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-servers
+
+  mcp-postgres-client:
+    build: ./postgres
+    restart: unless-stopped
+    container_name: mcp-postgres-client
+    environment:
+      - POSTGRES_URL=${TARGET_POSTGRES_URL:-postgresql://postgres:postgres@host.docker.internal:5432/postgres}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-servers
+
+  mcp-slack:
+    build: ./slack
+    restart: unless-stopped
+    container_name: mcp-slack
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - mcp-servers
+
+  mcp-sentry:
+    build: ./sentry
+    restart: unless-stopped
+    container_name: mcp-sentry
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
     networks:
       - mcp-servers
 

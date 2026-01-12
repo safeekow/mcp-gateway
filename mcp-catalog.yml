@@ -1,11 +1,11 @@
-servers:
+catalog_servers:
   - id: mermaid
     name: Mermaid
     category: Utilities
     url: http://mcp-mermaid:3033/sse
     auth_type: Open
     provider: Local
-    description: テキストベースのMermaid記法からダイアグラム画像を生成します。
+    description: "テキストベースのMermaid記法からダイアグラム画像を生成します。"
     requires_api_key: false
     tags:
       - utilities
@@ -16,7 +16,7 @@ servers:
     url: http://mcp-sequentialthinking:8000/sse
     auth_type: Open
     provider: Local
-    description: AIモデルが複雑な問題を解決するための「思考の連鎖」を構造化して提供します。
+    description: "AIモデルが複雑な問題を解決するための「思考の連鎖」を構造化して提供します。"
     requires_api_key: false
     tags:
       - utilities
@@ -27,7 +27,7 @@ servers:
     url: http://mcp-aws-diagram:8000/sse
     auth_type: Open
     provider: Local
-    description: Pythonのdiagramsパッケージを使用して、AWSのインフラ構成図をコードベースで生成します。
+    description: "Pythonのdiagramsパッケージを使用して、AWSのインフラ構成図をコードベースで生成します。"
     requires_api_key: false
     tags:
       - utilities
@@ -40,7 +40,7 @@ servers:
     url: http://mcp-aws-documentation:8000/sse
     auth_type: Open
     provider: Local
-    description: AWSの公式ドキュメントを検索し、関連する情報を抽出します。
+    description: "AWSの公式ドキュメントを検索し、関連する情報を抽出します。"
     requires_api_key: false
     tags:
       - documentation
@@ -52,46 +52,175 @@ servers:
     url: http://mcp-dart:8000/sse
     auth_type: Open
     provider: Local
-    description: Dart 言語および Flutter プロジェクトの開発支援機能を提供します。
+    description: "Dart 言語および Flutter プロジェクトの開発支援機能を提供します。"
     requires_api_key: false
     tags:
       - software
       - development
       - dart
 
-  - name: magic
+  - id: magic
+    name: Magic
+    category: Software Development
     url: http://mcp-magic:8000/sse
-    transport: sse
-    description: 自然言語の指示から、即座に利用可能な UI コンポーネントやコードスニペットを生成します。
+    auth_type: Open
+    provider: Local
+    description: "自然言語の指示から、即座に利用可能な UI コンポーネントやコードスニペットを生成します。"
+    requires_api_key: false
+    tags:
+      - ui
+      - software
+      - development
+      - magic
 
-  - name: morphllm
+  - id: morphllm
+    name: "Morph MCP"
     url: http://mcp-morphllm:8000/sse
-    transport: sse
-    description: ソースコードに対する変更を高速かつ正確に適用するための支援ツールです。
+    category: Software Development
+    auth_type: Open
+    provider: Local
+    description: "ソースコードに対する変更を高速かつ正確に適用するための支援ツールです。"
+    requires_api_key: false
+    tags:
+      - software
+      - development
 
-  - name: growi
+  - id: growi
+    name: Growi
     url: http://mcp-growi:8000/sse
-    transport: sse
-    description: Wikiツール「GROWI」と連携し、ナレッジの検索や操作を行います。
+    category: Documentation
+    auth_type: Open
+    provider: Local
+    description: "Wikiツール「GROWI」と連携し、ナレッジの検索や操作を行います。"
+    requires_api_key: false
+    tags:
+      - documentation
 
-  - name: memory
+  - id: memory
+    name: Memory
     url: http://mcp-memory:8000/sse
-    transport: sse
-    description: AIとの対話履歴や重要な事実を「知識グラフ」として永続化します。
+    category: Utilities
+    auth_type: Open
+    provider: Local
+    description: "AIとの対話履歴や重要な事実を「知識グラフ」として永続化します。"
+    requires_api_key: false
+    tags:
+      - utilities
+      - knowledge
 
-  - name: gitlab
+  - id: gitlab
+    name: GitLab
     url: http://mcp-gitlab:8000/sse
-    transport: sse
-    description: GitLab リポジトリに対する様々な操作を提供します。
+    category: Software Development
+    auth_type: Open
+    provider: Local
+    description: "GitLab リポジトリに対する様々な操作を提供します。"
+    requires_api_key: false
+    tags:
+      - software
+      - development
+      - git
 
- # Optional: Categories for UI filtering
- categories:
-   - Utilities
-   - Software Development
-   - Documentation
+  - id: filesystem
+    name: Filesystem
+    category: Utilities
+    url: http://mcp-filesystem:8000/sse
+    auth_type: Open
+    provider: Official
+    description: "ローカルファイルシステムへの安全な読み書きアクセスを提供します。"
+    requires_api_key: false
+    tags:
+      - utilities
+      - files
 
- # Optional: Auth types for UI filtering
- auth_types:
-   - Open
-   - OAuth2.1
-   - API Key
+  - id: fetch
+    name: Fetch
+    category: Utilities
+    url: http://mcp-fetch:8000/sse
+    auth_type: Open
+    provider: Official
+    description: "Webコンテンツを取得し、LLMが読みやすい形式（Markdown等）に変換します。"
+    requires_api_key: false
+    tags:
+      - utilities
+      - web
+
+  - id: time
+    name: Time
+    category: Utilities
+    url: http://mcp-time:8000/sse
+    auth_type: Open
+    provider: Official
+    description: "現在時刻の取得やタイムゾーン変換機能を提供します。"
+    requires_api_key: false
+    tags:
+      - utilities
+      - time
+
+  - id: github
+    name: GitHub
+    category: Software Development
+    url: http://mcp-github:8000/sse
+    auth_type: "OAuth2.1"
+    provider: Official
+    description: "GitHub APIを使用してリポジトリの検索、PRの管理、ファイルの操作を行います。（登録時のAPI Key欄には 'GITHUB_PERSONAL_ACCESS_TOKEN' を入力してください。）"
+    requires_api_key: false
+    tags:
+      - development
+      - github
+
+  - id: google-drive
+    name: Google Drive
+    category: Business
+    url: http://mcp-gdrive:8000/sse
+    auth_type: "OAuth2.1"
+    provider: Official
+    description: "Google Drive内のファイルの検索と読み取りを行います。"
+    requires_api_key: false
+    tags:
+      - business
+      - google
+
+  - id: postgres
+    name: PostgreSQL Client
+    category: Utilities
+    url: http://mcp-postgres-client:8000/sse
+    auth_type: Open
+    provider: Official
+    description: "外部のPostgreSQLデータベースに対するクエリ実行やスキーマ検査を行います。"
+    requires_api_key: false
+    tags:
+      - database
+      - sql
+
+  - id: slack
+    name: Slack
+    category: Business
+    url: http://mcp-slack:8000/sse
+    auth_type: "OAuth2.1"
+    provider: Official
+    description: "Slackのチャンネル読み取りやメッセージ送信機能を提供します。（登録時のAPI Key欄には 'SLACK_BOT_TOKEN' を入力してください。）"
+    requires_api_key: false
+    tags:
+      - business
+      - chat
+
+  - id: sentry
+    name: Sentry
+    category: Software Development
+    url: http://mcp-sentry:8000/sse
+    auth_type: "OAuth2.1"
+    provider: Official
+    description: "Sentryのエラー情報の検索や分析を行います。"
+    requires_api_key: false
+    tags:
+      - development
+      - monitoring
+categories:
+  - Utilities
+  - Software Development
+  - Documentation
+auth_types:
+  - Open
+  - OAuth2.1
+  - API Key

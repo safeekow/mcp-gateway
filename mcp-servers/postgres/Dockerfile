@@ -5,9 +5,7 @@ RUN apt-get update && apt-get install -y netcat-openbsd \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-COPY wrapper.js .
-
 EXPOSE 8000
 
-CMD ["sh", "-c", "supergateway --port 8000 --stdio 'node wrapper.js npx -y @21st-dev/magic'"]
+# POSTGRES_URL は docker-compose から args として渡す
+CMD ["sh", "-c", "supergateway --port 8000 --stdio 'npx -y @modelcontextprotocol/server-postgres ${POSTGRES_URL}'"]

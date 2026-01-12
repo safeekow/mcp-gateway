@@ -116,3 +116,6 @@ Gateway 管理画面から新しいサーバーを登録する際、URL には *
 ```bash
 docker compose logs -f <service-name>
 ```
+## 参考サイト
+
+- [MCPサーバ一覧](https://github.com/modelcontextprotocol/servers)
