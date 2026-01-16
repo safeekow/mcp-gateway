@@ -11,6 +11,7 @@
 5. [監査・ログ](#監査ログ)
 6. [脆弱性管理](#脆弱性管理)
 7. [インシデント対応](#インシデント対応)
+8. [開発プロセスにおけるセキュリティチェック](#開発プロセスにおけるセキュリティチェック)
 
 ---
 
@@ -303,7 +304,7 @@ echo "*.key" >> .gitignore
 
 ```bash
 # バックアップ暗号化スクリプト
-cat > /opt/mcp-gateway/scripts/encrypted-backup.sh << 'EOF'
+cat > /opt/mcp-gateway/scripts/encrypted-backup.sh << 'EOF' 
 #!/bin/bash
 BACKUP_DIR="/opt/backups/mcp-gateway"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
@@ -435,7 +436,7 @@ sudo dpkg-reconfigure -plow unattended-upgrades
 
 ```bash
 # 定期的なイメージ更新スクリプト
-cat > /usr/local/bin/update-mcp-gateway.sh << 'EOF'
+cat > /usr/local/bin/update-mcp-gateway.sh << 'EOF' 
 #!/bin/bash
 cd /opt/mcp-gateway
 
@@ -523,7 +524,7 @@ docker compose up -d
 # incident-contacts.yml
 platform_admin:
   email: admin@your-domain.com
-  phone: +81-90-XXXX-XXXX
+  phone: "+81-90-XXXX-XXXX"
 
 security_team:
   email: security@your-domain.com
@@ -533,6 +534,66 @@ on_call:
   email: oncall@your-domain.com
   pagerduty: "https://your-org.pagerduty.com"
 ```
+
+---
+
+## 開発プロセスにおけるセキュリティチェック
+
+開発およびデプロイプロセスにおいて、意図せず機密情報（APIキー、トークン、パスワードなど）をコミットしないための手順です。
+
+### 1. コミット前の確認手順
+
+コミットを作成する前に、以下の手順で機密情報の混入を防ぎます。
+
+#### ステップ 1: 変更内容の目視確認
+
+ステージングされたファイルに機密情報が含まれていないか確認します。
+
+```bash
+# ステージングされた変更のみを確認
+git diff --staged
+```
+
+#### ステップ 2: 文字列検索によるチェック
+
+プロジェクト全体、または変更ファイルに対して機密情報のパターンを検索します。
+
+```bash
+# JWTトークン、Bearer、秘密鍵などのパターンを検索
+# (node_modules, .git, 画像ファイルなどを除外)
+grep -rE "eyJ|Bearer [a-zA-Z0-9]|BEGIN PRIVATE KEY|password\s*=|secret\s*=" . \
+  --exclude-dir={.git,.idea,.venv,venv,__pycache__,node_modules} \
+  --exclude={*.lock,*.png,*.jpg,*.svg}
+```
+
+### 2. 機密情報が見つかった場合の対応
+
+#### ケース A: まだコミットしていない場合 (Staged/Unstaged)
+
+該当ファイルの該当箇所を削除、またはプレースホルダー（例: `<YOUR_TOKEN>`）に置換してからステージングしてください。
+
+#### ケース B: 直前のコミットに含まれてしまった場合（未プッシュ）
+
+```bash
+# 1. ファイルを修正（機密情報を削除）
+# 2. 修正をステージング
+git add <修正したファイル>
+
+# 3. 直前のコミットを上書き修正
+git commit --amend --no-edit
+```
+
+#### ケース C: 過去のコミットに含まれている場合（未プッシュ/プッシュ済み問わず）
+
+**重要**: 一度でもリモートリポジトリ（GitHubなど）にプッシュされたトークンは、**「漏洩した」とみなして即座に無効化・再発行**してください。履歴を削除しても、誰かが既にpullしている可能性があります。
+
+その上で、履歴から削除する必要がある場合は `git filter-repo` などのツールを使用しますが、これはリポジトリの歴史を書き換える破壊的な操作です。
+
+1.  **トークンの無効化**: 管理画面やプロバイダの設定で、漏洩したトークンを無効化します。
+2.  **新しいトークンの発行**: 新しいトークンを取得し、環境変数などで安全に管理します。
+3.  **履歴のクリーンアップ (上級者向け)**:
+    *   チームメンバー全員の作業に影響が出るため、慎重に行ってください。
+    *   [BFG Repo-Cleaner](https://rtyley.github.io/bfg-repo-cleaner/) や `git filter-repo` を使用して履歴からファイルを完全に削除します。
 
 ---
 
