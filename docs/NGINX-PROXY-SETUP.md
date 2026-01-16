@@ -277,6 +277,8 @@ sudo iptables -A INPUT -p tcp --dport 8080 -j DROP
 
 ### 2. Fail2Ban設定
 
+Fail2banは、ログファイルを監視して、不正なアクセスや攻撃を検知すると、自動的にそのIPアドレス（インターネット上の住所のようなもの）をブロックするツール。
+
 ```bash
 # Fail2Banインストール
 sudo apt install -y fail2ban
