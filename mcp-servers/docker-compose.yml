@@ -260,7 +260,7 @@ services:
     build: ./memory-bank
     restart: unless-stopped
     container_name: mcp-memory-bank
-    env_file:
+    environment:
       - MEMORY_BANK_ROOT=/opt/memory-bank
     volumes:
       - ../workspace/memory-bank:/opt/memory-bank
