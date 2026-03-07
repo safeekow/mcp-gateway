@@ -256,6 +256,23 @@ services:
       start_period: 5s
     networks:
       - mcp-servers
+  mcp-memory-bank:
+    build: ./memory-bank
+    restart: unless-stopped
+    container_name: mcp-memory-bank
+    env_file:
+      - MEMORY_BANK_ROOT=/opt/memory-bank
+    volumes:
+      - ../workspace/memory-bank:/opt/memory-bank
+    healthcheck:
+      # ncでポートが開いているか確認
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 30s      # チェックの間隔
+      timeout: 10s       # タイムアウト時間
+      retries: 3         # 失敗とみなすまでの回数
+      start_period: 5s   # 起動直後の猶予時間
+    networks:
+      - mcp-servers
 
 networks:
   mcp-servers:
