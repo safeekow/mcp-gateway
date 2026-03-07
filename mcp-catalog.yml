@@ -216,6 +216,23 @@ catalog_servers:
     tags:
       - development
       - monitoring
+
+  - id: memory-bank
+    name: Memory Bank
+    url: http://mcp-memory-bank:8000/sse
+    category: Documentation
+    auth_type: Open
+    provider: Local
+    description: "メモリバンクMCPサーバーは、従来のファイルベースのメモリバンクを中央集約型サービスへと変革し、以下の機能を提供します：
+
+    MCPプロトコルを介したメモリバンクファイルへのリモートアクセス
+    複数プロジェクトにわたるメモリバンク管理の実現
+    一貫したファイル構造と検証の維持
+    プロジェクト間メモリバンクの適切な分離の確保"
+    requires_api_key: false
+    tags:
+      - documentation
+
 categories:
   - Utilities
   - Software Development
